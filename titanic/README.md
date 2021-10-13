@@ -77,7 +77,56 @@ plt.show()
 ![image](https://user-images.githubusercontent.com/75970111/136898402-4f45e0d9-dc99-4a15-85e0-cff9d39f8502.png)
 
 ## 2. 결측치 대체
-(1) 정규표현식
+### 1) 정규표현식
 ```
 df_train['Initial'] = df_train.Name.str.extract('([A-Za-z]+)\.') #Mr, Ms 등 꺼내기
+```
+
+## 3. ML
+### 1) SVM
+- 참고 : https://hleecaster.com/ml-svm-concept/
+- **결정경계(Decision Boundary)**, 즉 분류를 위한 기준 선을 정의하는 모델
+- 결정경계는 데이터 군으로부터 최대한 멀리 떨어지는 것이 좋음
+- 서포트 벡터(support vectors) : 결정경계와 가까이 있는 데이터 포인트
+- 마진(Margin) : 결정경계와 서포트 벡터 사이의 거리 > Hard Margin 아웃라이어 허용X, 서포트벡터와 결정경계 사이 거리가 매우 좁음, 오버피팅 문제 발생 / Soft margin 서포트벡터와 결정경계 사이 거리가 멀어짐, 언더피팅 문제 발생 
+- **최적의 결정경계는 마진을 최대화**
+- 장점 : 서포트 벡터만 잘 고르면 되기 때문에 매우 빠름!
+```
+from sklearn import svm
+model = svm.SVC()
+model.fit(train_X, train_Y)
+prediction1 = model.predict(test_X)
+print('Accuracy of rbf SVM is ', metrics.accuracy_score(prediction1, test_Y))
+```
+하이퍼파라미터 조절
+- `kernel='rbf'`(기본값), `kernel='linear'` 등 데이터 변환
+- `C=1` 마진조절 (작을수록 소프트마진)
+- `gamma=0.1` 결정경계를 얼마나 유연하게 그을 것인지. 낮추면 직선에 가깝고 높이면 구불구불한 결졍경계
+
+### 2) K-Nearest Neighbours(KNN)
+- 참고 : https://bkshin.tistory.com/entry/%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-6-K-%EC%B5%9C%EA%B7%BC%EC%A0%91%EC%9D%B4%EC%9B%83KNN
+- k개의 데이터를 살펴본 뒤, 주변 데이터가 더 많이 포함된 범주로 분류
+- 일반적으로 k는 홀수를 사용, 짝수일 경우 동점 발생 가능
+- KNN은 Lazy Model이라 훈련이 필요없고, 바로 분류 > 빠른 장점
+```
+from sklearn.neighbors import KNeighborsClassifier
+model = KNeighborsClassifier()
+model.fit(train_X, train_Y)
+prediction5 = model.predict(test_X)
+print('Accuracy of the KNN is ', metrics.accuracy_score(prediction5, test_Y))
+```
+하이퍼파라미터 조절
+- `n_neighbors=6` 기본값 = 5
+
+### 3) Gaussian Naive Bayes
+- 참고 : https://jhryu1208.github.io/data/2020/11/14/naive_bayes/
+- 선형 모델과 매우 유사하고 훈련속도가 더 빠르지만, 일반화 성능이 조금 뒤쳐짐
+- scikit-learn naive bayes :`GaussianNB`(연속 데이터), `BernoulliNB`(이진 데이터), `MultinomialNB`(카운트데이터)
+- Gaussian Naive Bayes는 클래스별로 각 특성의 표준편차와 평균 저장, 고차원 데이터에 사용
+```
+from sklearn.naive_bayes import GaussianNB
+model = GaussianNB()
+model.fit(train_X, train_Y)
+prediction6 = model.predict(test_X)
+print('Accuracy of the NaiveBayes is ', metrics.accuracy_score(prediction6, test_Y))
 ```
