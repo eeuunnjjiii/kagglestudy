@@ -130,3 +130,58 @@ model.fit(train_X, train_Y)
 prediction6 = model.predict(test_X)
 print('Accuracy of the NaiveBayes is ', metrics.accuracy_score(prediction6, test_Y))
 ```
+
+## 4. Ensembling
+### 1) Voting Classifier
+- 가장 간단한 방법
+- 모든 하위모델의 평균 예측 결과 기반
+- 모든 하위모델이나 베이스모델은 모두 다른 타입
+```
+from sklearn.ensemble import VotingClassifier
+ensemble_lin_rbf = VotingClassifier(estimators=[('KNN', KNeighborsClassifier(n_neighbors=10)), 
+                                                ('RBF',svm.SVC(probability=True,kernel='rbf',C=0.5,gamma=0.1)),
+                                              ('RFor',RandomForestClassifier(n_estimators=500,random_state=0)),
+                                              ('LR',LogisticRegression(C=0.05)),
+                                              ('DT',DecisionTreeClassifier(random_state=0)),
+                                              ('NB',GaussianNB()),
+                                              ('svm',svm.SVC(kernel='linear',probability=True))
+                                            ], voting='soft').fit(train_X, train_Y)
+print('The accuracy for ensembled model is:', ensemble_lin_rbf.score(test_X, test_Y))
+cross = cross_val_score(ensemble_lin_rbf, X, Y, cv=10, scoring='accuracy')
+print('The cross validated score is', cross.mean())
+```
+### 2) Bagging
+- 작게 분할한 데이터로 비슷한 분류기를 만들어 모든 예측의 평균으로 결정
+- voting과 달리 유사한 분류기를 사용
+- 분산이 큰 모델에 잘 적용됨 > decision tree, Random Forests
+```
+from sklearn.ensemble import BaggingClassifier
+model = BaggingClassifier(base_estimator=DecisionTreeClassifier(), random_state=0, n_estimators=100)
+model.fit(train_X, train_Y)
+prediction = model.predict(test_X)
+print('The accuracy for bagged Decision Tree is', metrics.accuracy_score(prediction, test_Y))
+result = cross_val_score(model, X, Y, cv=10, scoring='accuracy')
+print('The cross validated score for bagged Decision Tree is', result.mean())
+```
+
+### 3) Boosting
+- 약한 모델에 가중치를 적용해 강화하는 방식
+```
+# AdaBoost(Adaptive Boosting)
+from sklearn.ensemble import AdaBoostClassifier
+ada = AdaBoostClassifier(n_estimators=200, random_state=0, learning_rate=0.1)
+result = cross_val_score(ada, X, Y, cv=10, scoring='accuracy')
+print('The cross validated score for AdaBoost is:',result.mean())
+
+# Stochastic Gradient Boosting
+from sklearn.ensemble import GradientBoostingClassifier
+grad = GradientBoostingClassifier(n_estimators=500, random_state=0, learning_rate=0.1)
+result = cross_val_score(grad, X, Y, cv=10, scoring='accuracy')
+print('The cross validated score for Gradient Boosting is:',result.mean())
+
+# XGBoost
+import xgboost as xg
+xgboost = xg.XGBClassifier(n_estimators=900, learning_rate=0.1)
+result = cross_val_score(xgboost, X, Y, cv=10, scoring='accuracy')
+print('The cross validated score for XGBoost is:',result.mean())
+```
