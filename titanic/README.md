@@ -76,10 +76,15 @@ plt.show()
 `split=False`
 ![image](https://user-images.githubusercontent.com/75970111/136898402-4f45e0d9-dc99-4a15-85e0-cff9d39f8502.png)
 
-## 2. 결측치 대체
+## 2. Feature Engineering
 ### 1) 정규표현식
 ```
 df_train['Initial'] = df_train.Name.str.extract('([A-Za-z]+)\.') #Mr, Ms 등 꺼내기
+```
+### 2) 값 변환
+```
+data['Sex'].replace(['male', 'female'], [0, 1], inplace=True)
+data['Embarked'].replace(['S', 'C', 'Q'], [0, 1, 2], inplace=True)
 ```
 
 ## 3. ML
@@ -131,7 +136,31 @@ prediction6 = model.predict(test_X)
 print('Accuracy of the NaiveBayes is ', metrics.accuracy_score(prediction6, test_Y))
 ```
 
-## 4. Ensembling
+## 4. Cross Validation
+여러 모델의 CV 평균과 분산 동시 비교
+```
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score, cross_val_predict
+
+kfold = KFold(n_splits=10, random_state=22)
+xyz = []
+accuracy = []
+std = []
+classifiers = ['Linear Svm','Radial Svm','Logistic Regression','KNN','Decision Tree','Naive Bayes','Random Forest']
+models = [svm.SVC(kernel='linear'), svm.SVC(kernel='rbf'), LogisticRegression(), KNeighborsClassifier(n_neighbors=9),
+          DecisionTreeClassifier(), GaussianNB(), RandomForestClassifier(n_estimators=100)]
+for i in models:
+  model = i
+  cv_result = cross_val_score(model, X, Y, cv=kfold, scoring='accuracy')
+  xyz.append(cv_result.mean())
+  std.append(cv_result.std())
+  accuracy.append(cv_result)
+
+new_models_dataframe2 = pd.DataFrame({'CV Mean':xyz, 'Std':std}, index=classifiers)
+new_models_dataframe2
+```
+
+## 5. Ensembling
 ### 1) Voting Classifier
 - 가장 간단한 방법
 - 모든 하위모델의 평균 예측 결과 기반
