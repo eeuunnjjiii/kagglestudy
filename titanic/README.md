@@ -2,7 +2,7 @@
 
 ## 1. 시각화
 ### 1) 컬럼별 결측치 확인
-```
+```python
 for col in df_train.columns: 
   msg = 'column: {:>10}\t Percent of NaN value; {:.2}%'.format(col, 100 * (df_train[col].isnull().sum() / df_train[col].shape[0]))
   ## {:>10}\t : 오른쪽 정렬, {:.2} : 소수점 둘째자리까지 출력
@@ -12,21 +12,21 @@ for col in df_train.columns:
 <img width="930" alt="스크린샷 2021-10-12 오전 10 06 47" src="https://user-images.githubusercontent.com/75970111/136873801-a29b2ad1-9b11-48f4-b482-c2441a5f2dbc.png">
 
 ### 2) 결측치 - matrix
-```
+```python
 import missingno as msno
 msno.matrix(df=df_train.iloc[:,:], figsize=(8,8), color=(0.8, 0.5, 0.2) #color로 색상 지정
 ```
 ![image](https://user-images.githubusercontent.com/75970111/136874236-a038cbf1-db27-4e8c-987b-e9e24ea69e1a.png)
 
 ### 3) 결측치 - bar
-```
+```python
 import missingno as msno
 msno.bar(df=df_train.iloc[:,:], figsize=(8,8), color=(0.8, 0.5, 0.2))
 ```
 ![image](https://user-images.githubusercontent.com/75970111/136874283-bca59e61-2310-4946-9e90-979696af1f3e.png)
 
 ### 4) 파이차트
-```
+```python
 f, ax = plt.subplots(1, 2, figsize=(18, 8))
 
 df_train['Survived'].value_counts().plot.pie(explode=[0, 0.1], autopct='%1.1f%%', ax=ax[0], shadow=True) #explode : 파이차트 조각 돌출 정도, autopct : 파이조각 전체 대비 백분율
@@ -39,18 +39,18 @@ plt.show()
 ![image](https://user-images.githubusercontent.com/75970111/136874926-26fafdd0-3572-4d93-8cba-8be9678ac94a.png)
 
 ### 5) 평균 꺾은선 그래프
-```
+```python
 sns.factorplot('Pclass', 'Survived', hue='Sex', data=df_train, size=6, aspect=1.5) ## size:시각화 크기, aspect:시각화 비율
 ```
 ![image](https://user-images.githubusercontent.com/75970111/136875971-c47f0c6e-ad15-4b19-ba90-efbcf0c6bb75.png)
 
-```
+```python
 sns.factorplot('Sex', 'Survived', col='Pclass', data=df_train, satureation=.5, size=9, aspect=1) #satureation:채도의 비율
 ```
 ![image](https://user-images.githubusercontent.com/75970111/136876052-04135a5b-e3cf-490c-9451-ab38f735cfcd.png)
 
 ### 6) 분포 겹쳐 그리기
-```
+```python
 fig, ax = plt.subplots(1, 1, figsize=(9, 5))
 sns.kdeplot(df_train[df_train['Survived']==1]['Age'], ax=ax)
 sns.kdeplot(df_train[df_train['Survived']==0]['Age'], ax=ax)
@@ -60,7 +60,7 @@ plt.show()
 ![image](https://user-images.githubusercontent.com/75970111/136876434-ef900ddd-6043-4b0e-85d5-6f275ce7ced3.png)
 
 ### 7) violinplot
-```
+```python
 f, ax = plt.subplots(1, 2, figsize=(18, 8))
 sns.violinplot('Pclass', 'Age', hue='Survived', data=df_train, sclae='count', split=True, ax=ax[0]) 
 # split : 하나로 합칠 것인지, 분리할 것인지
@@ -78,11 +78,11 @@ plt.show()
 
 ## 2. Feature Engineering
 ### 1) 정규표현식
-```
+```python
 df_train['Initial'] = df_train.Name.str.extract('([A-Za-z]+)\.') #Mr, Ms 등 꺼내기
 ```
 ### 2) 값 변환
-```
+```python
 data['Sex'].replace(['male', 'female'], [0, 1], inplace=True)
 data['Embarked'].replace(['S', 'C', 'Q'], [0, 1, 2], inplace=True)
 ```
@@ -96,7 +96,7 @@ data['Embarked'].replace(['S', 'C', 'Q'], [0, 1, 2], inplace=True)
 - 마진(Margin) : 결정경계와 서포트 벡터 사이의 거리 > Hard Margin 아웃라이어 허용X, 서포트벡터와 결정경계 사이 거리가 매우 좁음, 오버피팅 문제 발생 / Soft margin 서포트벡터와 결정경계 사이 거리가 멀어짐, 언더피팅 문제 발생 
 - **최적의 결정경계는 마진을 최대화**
 - 장점 : 서포트 벡터만 잘 고르면 되기 때문에 매우 빠름!
-```
+```python
 from sklearn import svm
 model = svm.SVC()
 model.fit(train_X, train_Y)
@@ -113,7 +113,7 @@ print('Accuracy of rbf SVM is ', metrics.accuracy_score(prediction1, test_Y))
 - k개의 데이터를 살펴본 뒤, 주변 데이터가 더 많이 포함된 범주로 분류
 - 일반적으로 k는 홀수를 사용, 짝수일 경우 동점 발생 가능
 - KNN은 Lazy Model이라 훈련이 필요없고, 바로 분류 > 빠른 장점
-```
+```python
 from sklearn.neighbors import KNeighborsClassifier
 model = KNeighborsClassifier()
 model.fit(train_X, train_Y)
@@ -128,7 +128,7 @@ print('Accuracy of the KNN is ', metrics.accuracy_score(prediction5, test_Y))
 - 선형 모델과 매우 유사하고 훈련속도가 더 빠르지만, 일반화 성능이 조금 뒤쳐짐
 - scikit-learn naive bayes :`GaussianNB`(연속 데이터), `BernoulliNB`(이진 데이터), `MultinomialNB`(카운트데이터)
 - Gaussian Naive Bayes는 클래스별로 각 특성의 표준편차와 평균 저장, 고차원 데이터에 사용
-```
+```python
 from sklearn.naive_bayes import GaussianNB
 model = GaussianNB()
 model.fit(train_X, train_Y)
@@ -138,7 +138,7 @@ print('Accuracy of the NaiveBayes is ', metrics.accuracy_score(prediction6, test
 
 ## 4. Cross Validation
 여러 모델의 CV 평균과 분산 동시 비교
-```
+```python
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score, cross_val_predict
 
@@ -165,7 +165,7 @@ new_models_dataframe2
 - 가장 간단한 방법
 - 모든 하위모델의 평균 예측 결과 기반
 - 모든 하위모델이나 베이스모델은 모두 다른 타입
-```
+```python
 from sklearn.ensemble import VotingClassifier
 ensemble_lin_rbf = VotingClassifier(estimators=[('KNN', KNeighborsClassifier(n_neighbors=10)), 
                                                 ('RBF',svm.SVC(probability=True,kernel='rbf',C=0.5,gamma=0.1)),
@@ -183,7 +183,7 @@ print('The cross validated score is', cross.mean())
 - 작게 분할한 데이터로 비슷한 분류기를 만들어 모든 예측의 평균으로 결정
 - voting과 달리 유사한 분류기를 사용
 - 분산이 큰 모델에 잘 적용됨 > decision tree, Random Forests
-```
+```python
 from sklearn.ensemble import BaggingClassifier
 model = BaggingClassifier(base_estimator=DecisionTreeClassifier(), random_state=0, n_estimators=100)
 model.fit(train_X, train_Y)
@@ -195,7 +195,7 @@ print('The cross validated score for bagged Decision Tree is', result.mean())
 
 ### 3) Boosting
 - 약한 모델에 가중치를 적용해 강화하는 방식
-```
+```python
 # AdaBoost(Adaptive Boosting)
 from sklearn.ensemble import AdaBoostClassifier
 ada = AdaBoostClassifier(n_estimators=200, random_state=0, learning_rate=0.1)
