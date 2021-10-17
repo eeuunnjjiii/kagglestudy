@@ -121,7 +121,7 @@ prediction5 = model.predict(test_X)
 print('Accuracy of the KNN is ', metrics.accuracy_score(prediction5, test_Y))
 ```
 하이퍼파라미터 조절
-- `n_neighbors=6` 기본값 = 5
+- `n_neighbors=7` 기본값 = 5
 
 ### 3) Gaussian Naive Bayes
 - 참고 : https://jhryu1208.github.io/data/2020/11/14/naive_bayes/
