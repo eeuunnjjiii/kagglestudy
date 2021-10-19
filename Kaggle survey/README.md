@@ -30,11 +30,21 @@ plt.show()
 
 ### 3) Matploblib 파이차트
 ```python
-my_circle = plt.Circle((x, y), r, color='white') ##x,y 원의 중심, r 반지름 (default=5)
-p = plt.gcf()
-p.gca().add_artist(my_circle)
-plt.ylabel('')
-plt.show()
+plt.figure(figsize=(10, 8))
+
+temp = data['FirstTrainingSelect'].value_counts()
+labels = temp.index
+sizes = temp.values
+
+plt.pie(sizes, labels=labels, autopct='%1.1f%%')
+
+centre_circle = plt.Circle((0, 0), 0.75, color='black', fc='white', linewidth=1.25) ## (0,0):원의 중심, 0.75:반지름
+fig = plt.gcf() 
+fig.gca().add_artist(centre_circle)
+
+# Set aspect ratio to be equal so that pie is drawn as a circle.
+plt.axis('equal')
+plt.show();
 ```
 
 ### 4) 지도 차트
