@@ -43,6 +43,33 @@ import plotly.offline as py
 py.init_notebook_mode(connected=True)
 ```
 
+### 5) 벤다이어그램
+```python
+from matplotlib_venn import venn2
+venn2(subsets = (python.shape[0], R.shape[0], both.shape[0]), set_labels=('Python Users', 'R Users'))
+plt.title('Venn Diagram for Users')
+plt.show()
+```
+![image](https://user-images.githubusercontent.com/75970111/137815523-1c29a759-f82b-49ad-9c09-8d7836e66889.png)
+
+### 6) 컬럼 별 반복 시각화
+```python
+import itertools
+plt.subplots(figsize=(22, 10))
+time_spent = ['TimeFindingInsights','TimeVisualizing','TimeGatheringData','TimeModelBuilding']
+length = len(time_spent)
+for i, j in itertools.zip_longest(time_spent, range(length)): ## 루프돌면서 자료 묶음
+  plt.subplot((length/2), 2, j+1) ## nrows, ncols, index
+  plt.subplots_adjust(wspace=0.2, hspace=0.5)
+  scientist[i].hist(bins=10, edgecolor='black')
+  plt.axvline(scientist[i].mean(), linestyle='dashed', color='r')
+  plt.title(i, size=20)
+  plt.xlabel('% TIme')
+
+plt.show()
+```
+![image](https://user-images.githubusercontent.com/75970111/137828954-f08d1de4-913b-47f1-a7af-5e1605739d3e.png)
+
 ### Seaborn Palette
 https://hleecaster.com/python-seaborn-color/
 
