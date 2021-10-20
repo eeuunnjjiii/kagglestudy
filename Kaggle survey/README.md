@@ -62,6 +62,27 @@ plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/75970111/137815523-1c29a759-f82b-49ad-9c09-8d7836e66889.png)
 
+### 5-1) 벤다이어그램(pyplot)
+```python
+import plotly.offline as py
+py.init_notebook_mode(connected=True)
+
+car = data['CareerSwitcher'].value_counts()
+labels = (np.array(car.index))
+proportions = (np.array((car/car.sum())*100))
+colors = ['#FEBFB3', '#E1396C']
+
+trace = go.Pie(labels=labels, values=proportions, hoverinfo='label+percent', marker=dict(colors=colors, line=dict(color='#000000', width=2)))
+
+layout = go.Layout(title='Working people looking to switch careers to data science')
+data_trace = [trace]
+fig = go.Figure(data=data_trace, layout=layout)
+py.iplot(fig, filename='Career_Switcher')
+fig.show(renderer="colab") # 코랩에서 실행시 입력해줘야함
+```
+![newplot](https://user-images.githubusercontent.com/75970111/138034847-e455ba8f-74b9-47f2-a7c5-1f6666be98ff.png)
+
+
 ### 6) 컬럼 별 반복 시각화
 ```python
 import itertools
