@@ -51,7 +51,53 @@ plt.show();
 ```python
 import plotly.offline as py
 py.init_notebook_mode(connected=True)
+import plotly.graph_objs as go
+from plotly import tools
+import plotly.figure_factory as ff
+
+df = pd.DataFrame(mcr['Country'].value_counts())
+df['country'] = df.index
+df.columns = ['number', 'country']
+df = df.reset_index().drop('index', axis=1)
+
+data = [dict(
+        type = 'choropleth',
+        locations = df['country'],
+        locationmode = 'country names',
+        z = df['number'],
+        text = df['country'],
+        colorscale = [[0,"rgb(5, 10, 172)"],[0.35,"rgb(40, 60, 190)"],
+                      [0.5,"rgb(70, 100, 245)"],
+            [0.6,"rgb(90, 120, 245)"],[0.7,"rgb(106, 137, 247)"],
+                      [1,"rgb(220, 220, 220)"]],
+        autocolorscale = False,
+        reversescale = True,
+        marker = dict(
+            line = dict (
+                color = 'rgb(180,180,180)',
+                width = 0.5
+            ) 
+        ),
+        colorbar = dict(
+            autotick = False,
+            tickprefix = '$',
+            title = 'Survey Respondents')
+)
+       ]
+layout = dict(
+    title = 'The Nationality of Respondents',
+    geo = dict(
+        showframe = False,
+        showcoastlines = True,
+        projection = dict(
+            type = 'Mercator')
+    )
+)
+
+fig = dict(data=data, layout=layout)
+py.iplot(fig, validate=False)
 ```
+![newplot](https://user-images.githubusercontent.com/75970111/138223550-2afd03d4-fd43-4946-8da8-604836297aed.png)
 
 ### 5) 벤다이어그램
 ```python
@@ -101,6 +147,11 @@ plt.show()
 ```
 ![image](https://user-images.githubusercontent.com/75970111/137828954-f08d1de4-913b-47f1-a7af-5e1605739d3e.png)
 
+### colab에서 plotly 실행
+```python
+import plotly.io as pio
+pio.renderers.default = 'colab'
+```
 ### Seaborn Palette
 https://hleecaster.com/python-seaborn-color/
 
