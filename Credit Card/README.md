@@ -119,6 +119,3 @@ for i, color in zip(thresholds, colors):
   plt.legend(loc="lower left")
 ```
 ![image](https://user-images.githubusercontent.com/75970111/142867869-0c1bb961-3826-4675-991b-0a5114277a12.png)
-![image](https://user-images.githubusercontent.com/75970111/142867870-4351f115-6473-458a-a1ae-8abe0fb5d5b8.png)
-
-  plt.title('Precision-Recall example')
